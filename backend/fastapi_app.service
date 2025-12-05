@@ -1,0 +1,27 @@
+[Unit]
+Description=Gunicorn instance to serve FastAPI App
+After=network.target
+
+[Service]
+# Usuario e Grupo que irao rodar o servico (ajuste conforme seu servidor)
+User=www-data
+Group=www-data
+
+# Diretorio onde esta o codigo do backend (ajuste para o caminho real no servidor)
+WorkingDirectory=/path/to/your/app/backend
+
+# Variaveis de ambiente e PATH para o virtualenv (ajuste para o caminho real)
+Environment="PATH=/path/to/your/app/venv/bin"
+Environment="OPENAI_API_KEY=sua_chave_aqui_ou_no_arquivo_env"
+
+# Comando de inicializacao
+# -w 4: numero de workers (ajuste conforme CPU: 2 x cores + 1)
+# -k uvicorn.workers.UvicornWorker: worker class para FastAPI
+# --bind 0.0.0.0:8000: endereco e porta
+ExecStart=/path/to/your/app/venv/bin/gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000
+
+# Reiniciar automaticamente em caso de falha
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
