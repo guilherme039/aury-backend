@@ -5,7 +5,8 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { NutritionInfo, DailyGoals, MealPlan, ScanResult } from '../types';
 
 // Backend local Python
-const LOCAL_BACKEND_URL = 'http://localhost:8000';
+// Backend hosted URL from environment variables
+const LOCAL_BACKEND_URL = import.meta.env.VITE_API_URL || 'https://aury-backend.onrender.com';
 
 /**
  * Converte base64 para Blob para envio via FormData
@@ -103,7 +104,7 @@ export const analyzeFoodImage = async (base64Image: string): Promise<ScanResult>
     }
 
     if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-      throw new Error("Não foi possível conectar ao servidor local. Certifique-se de que o backend Python está rodando em http://localhost:8000");
+      throw new Error("Não foi possível conectar ao servidor. Certifique-se de que o backend está acessível em " + LOCAL_BACKEND_URL);
     }
 
     if (error.message.includes('servidor local')) {

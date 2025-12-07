@@ -15,7 +15,8 @@ pip install -r requirements.txt
 python server.py
 ```
 
-O servidor estará disponível em `http://localhost:8000`
+O servidor local estará disponível em `http://localhost:8000`.
+O frontend está configurado para usar o backend hospedado em `https://aury-backend.onrender.com`.
 
 ## Endpoints
 
