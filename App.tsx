@@ -19,6 +19,8 @@ import LoginScreen from './components/LoginScreen';
 import Toast from './components/Toast';
 import SubscriptionScreen from './components/SubscriptionScreen';
 
+import { BACKEND_URL } from './backendConfig';
+
 function App() {
   const [meals, setMeals] = useState<Meal[]>(() => {
     return storageService.getMeals();
@@ -145,6 +147,13 @@ function App() {
       setIsShowingSplash(false);
     }, 2000);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Backend Wake-up Ping
+  useEffect(() => {
+    fetch(`${BACKEND_URL}/ping`, {
+      method: "GET",
+    }).catch(() => { });
   }, []);
 
   const handleOnboardingComplete = useCallback((onboardingData: OnboardingData) => {

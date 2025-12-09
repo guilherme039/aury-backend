@@ -117,5 +117,9 @@ Retorne o resultado ESTRITAMENTE no seguinte formato JSON (sem markdown, apenas 
 def read_root():
     return {"status": "online", "message": "Backend Python rodando!"}
 
+@app.get("/ping")
+def ping():
+    return "ok"
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

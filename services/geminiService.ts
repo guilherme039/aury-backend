@@ -1,116 +1,52 @@
 
-
-// Serviço de análise de imagem usando backend Python local
-import { GoogleGenAI, Type } from "@google/genai";
-import { NutritionInfo, DailyGoals, MealPlan, ScanResult } from '../types';
-
-// Backend local Python
-// Backend hosted URL from environment variables
-const LOCAL_BACKEND_URL = import.meta.env.VITE_API_URL || 'https://aury-backend.onrender.com';
+// Serviço de análise de imagem usando backend remoto
+import { ScanResult, DailyGoals, MealPlan } from '../types';
+import { BACKEND_URL } from '../backendConfig';
 
 /**
- * Converte base64 para Blob para envio via FormData
- */
-function base64ToBlob(base64: string, mimeType: string = 'image/jpeg'): Blob {
-  const byteString = atob(base64);
-  const ab = new ArrayBuffer(byteString.length);
-  const ia = new Uint8Array(ab);
-
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-
-  return new Blob([ab], { type: mimeType });
-}
-
-/**
- * Analisa imagem de comida usando o backend Python local
+ * Analisa imagem de comida usando o backend remoto
  */
 export const analyzeFoodImage = async (base64Image: string): Promise<ScanResult> => {
-  console.log("Iniciando análise com backend local...");
+  console.log("Iniciando análise com backend remoto...");
 
   try {
     // Converter base64 para Blob
-    const imageBlob = base64ToBlob(base64Image);
+    const byteString = atob(base64Image);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([ab], { type: 'image/jpeg' });
+    const file = new File([blob], "image.jpg", { type: "image/jpeg" });
 
-    // Criar FormData para envio
     const formData = new FormData();
-    formData.append('file', imageBlob, 'food.jpg');
+    formData.append("image", file); // key changed to 'image' as requested
 
-    // Timeout de 30 segundos
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
-
-    // Fazer requisição para o backend local
-    // MUDANÇA AQUI: Adicionando a barra final
-    const response = await fetch(`${LOCAL_BACKEND_URL}/analyze-image/`, {
-      method: 'POST',
+    // Fazer requisição para o backend remoto
+    // URL hardcoded conforme solicitado pelo usuário para garantir consistência
+    const response = await fetch("https://aury-backend.onrender.com/analisar-imagem", {
+      method: "POST",
       body: formData,
-      signal: controller.signal,
     });
-
-    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Backend error:", errorText);
-      throw new Error(`Erro no servidor local (Status ${response.status})`);
+      throw new Error(`Erro no servidor (Status ${response.status})`);
     }
 
-    const rawResult = await response.json();
-    console.log("Análise bruta recebida:", rawResult);
+    const data = await response.json();
+    console.log("Resposta bruta:", data);
 
-    // Helper para limpar e converter números
-    const parseNumber = (value: any): number => {
-      if (typeof value === 'number') return value;
-      if (typeof value === 'string') {
-        const cleaned = value.replace(/[^\d.]/g, '');
-        return parseFloat(cleaned) || 0;
-      }
-      return 0;
-    };
+    // O backend atual retorna o resultado diretamente ou dentro de uma chave?
+    // Baseado no request anterior, vamos assumir que data já é o resultado ou tem structure similar
+    // Vamos garantir que retornamos o formato ScanResult esperado pelo frontend
 
-    // Mapear resposta do backend para ScanResult
-    const detectedFoods = (rawResult.detailed_analysis || []).map((item: any) => ({
-      foodName: item.food,
-      weightGrams: parseNumber(item.estimated_weight_g),
-      calories: parseNumber(item.calories),
-      protein: parseNumber(item.protein),
-      carbs: parseNumber(item.carbs),
-      fat: parseNumber(item.fat),
-      confidenceScore: 0.95, // Valor padrão
-      adjustmentSuggestion: `Porção estimada: ${item.estimated_weight_g}g`
-    }));
-
-    const result: ScanResult = {
-      mealName: detectedFoods.map((f: any) => f.foodName).join(" + "),
-      totalNutrition: {
-        calories: parseNumber(rawResult.total_calories),
-        protein: parseNumber(rawResult.total_protein),
-        carbs: parseNumber(rawResult.total_carbs),
-        fat: parseNumber(rawResult.total_fats)
-      },
-      detectedFoods: detectedFoods
-    };
-
-    return result;
+    return data as ScanResult;
 
   } catch (error: any) {
     console.error("Erro ao analisar imagem:", error);
-
-    // Mensagens de erro específicas
-    if (error.name === 'AbortError') {
-      throw new Error("A análise demorou muito tempo. Verifique se o servidor Python está rodando.");
-    }
-
-    if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-      throw new Error("Não foi possível conectar ao servidor. Certifique-se de que o backend está acessível em " + LOCAL_BACKEND_URL);
-    }
-
-    if (error.message.includes('servidor local')) {
-      throw error;
-    }
-
     throw new Error("Erro ao processar a imagem. Tente novamente.");
   }
 };

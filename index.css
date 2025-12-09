@@ -1,7 +1,8 @@
-      text-rendering: optimizeLegibility;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      -webkit-text-size-adjust: 100%;
+      * {
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-text-size-adjust: 100%;
       }
 
       body {
@@ -22,20 +23,113 @@
 
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
-        width: 8px;
+        width: 6px;
       }
 
       ::-webkit-scrollbar-track {
-        background: #1a1a1d;
+        background: #09090b;
       }
 
       ::-webkit-scrollbar-thumb {
-        background: #333;
-        border-radius: 4px;
+        background: #27272a;
+        border-radius: 10px;
       }
 
       ::-webkit-scrollbar-thumb:hover {
-        background: #555;
+        background: #3f3f46;
+      }
+
+      /* Premium UI System */
+      :root {
+        --bg-deep: #050505;
+        --card-surface: linear-gradient(180deg, #18181b 0%, #09090b 100%);
+        --neon-blue: #06b6d4;
+        --text-primary: #ffffff;
+        --text-secondary: rgba(255, 255, 255, 0.6);
+      }
+
+      body {
+        background-color: var(--bg-deep);
+        color: var(--text-primary);
+      }
+
+      /* Card Panel: Embedded look with subtle gradients and borders */
+      .premium-card {
+        background: var(--card-surface);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow:
+          0 10px 30px -10px rgba(0, 0, 0, 0.8),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Soft overlay for depth */
+      .premium-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 40%;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
+        pointer-events: none;
+      }
+
+      /* Typography */
+      .text-value-xl {
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        background: linear-gradient(180deg, #ffffff 0%, #e5e5e5 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .text-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        letter-spacing: 0.01em;
+      }
+
+      /* Icons */
+      .icon-box {
+        background: rgba(6, 182, 212, 0.1);
+        border: 1px solid rgba(6, 182, 212, 0.2);
+        box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Physical Button 3D Effect */
+      .btn-physical-primary {
+        background: linear-gradient(145deg, #0891b2 0%, #0e7490 100%);
+        box-shadow:
+          0 4px 6px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2),
+          inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+        border: none;
+        transition: all 0.15s ease;
+      }
+
+      .btn-physical-primary:active {
+        transform: translateY(2px);
+        box-shadow:
+          0 1px 2px rgba(0, 0, 0, 0.3),
+          inset 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Glass Elements */
+      .glass-panel {
+        background: rgba(24, 24, 27, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
       }
 
       /* Animations */
