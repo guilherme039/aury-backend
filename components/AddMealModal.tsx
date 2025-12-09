@@ -63,7 +63,7 @@ const AddMealModal: React.FC<AddMealModalProps> = ({ isOpen, onClose, onAddMeal,
     onClose();
   };
 
-  const handleAnalysis = async (base64Image: string, imageUrl: string) => {
+  const handleAnalysis = async (file: File, imageUrl: string) => {
     console.log("Starting analysis...");
     setView('loading');
     setImageDataUrl(imageUrl);
@@ -71,7 +71,8 @@ const AddMealModal: React.FC<AddMealModalProps> = ({ isOpen, onClose, onAddMeal,
 
     try {
       console.log("Calling analyzeFoodImage...");
-      const result = await analyzeFoodImage(base64Image);
+      // Cast response to ScanResult since the service now returns any
+      const result = await analyzeFoodImage(file) as ScanResult;
       console.log("Analysis result received:", result);
 
       if (!result || !result.mealName) {
@@ -91,8 +92,18 @@ const AddMealModal: React.FC<AddMealModalProps> = ({ isOpen, onClose, onAddMeal,
   };
 
   const handleCapture = (dataUrl: string) => {
-    const base64 = dataUrlToBase64(dataUrl);
-    handleAnalysis(base64, dataUrl);
+    // Convert dataUrl to File
+    const arr = dataUrl.split(',');
+    const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/jpeg';
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    const file = new File([u8arr], "camera_capture.jpg", { type: mime });
+
+    handleAnalysis(file, dataUrl);
   };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,8 +112,8 @@ const AddMealModal: React.FC<AddMealModalProps> = ({ isOpen, onClose, onAddMeal,
 
     const previewUrl = URL.createObjectURL(file);
     try {
-      const base64 = await blobToBase64(file);
-      handleAnalysis(base64, previewUrl);
+      // Pass file directly
+      handleAnalysis(file, previewUrl);
     } catch (error) {
       setError("Não foi possível carregar a imagem da galeria.");
       setView('error');
