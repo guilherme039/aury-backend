@@ -4,7 +4,7 @@ import https from 'https';
 const apiKey = "49518d27e98154c282dd0473c565f1691b0978b89d0a059ea321b984524365e1";
 const endpoint = "https://api.piapi.ai/v1/chat/completions";
 
-// O mesmo prompt usado no geminiService.ts
+// O mesmo prompt usado no analysisService.ts
 const systemPrompt = `Você é um nutricionista especialista em visão computacional. Analise a imagem fornecida com extrema precisão.
             
 TAREFA:

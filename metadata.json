@@ -1,6 +1,6 @@
 {
   "name": "Aury",
-  "description": "A mobile-first application for calorie and nutrition tracking. It features image-based food recognition to automatically calculate nutritional values, inspired by modern fitness apps. Uses Gemini for powerful food analysis and insights.",
+  "description": "Aplicativo mobile-first para acompanhamento de calorias e nutrição. Possui reconhecimento de imagem para calcular valores nutricionais automaticamente, inspirado em apps modernos de fitness.",
   "requestFramePermissions": [
     "microphone",
     "camera"

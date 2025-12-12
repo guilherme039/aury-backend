@@ -70,7 +70,7 @@ const ApiIntegrations = () => {
                     <span className="text-gray-300 font-medium">Chave da API PiAPI (Fallback)</span>
                 </div>
                 <p className="text-xs text-gray-500 mb-3">
-                    Esta chave será usada como backup (PiAPI) caso a API principal do Gemini falhe.
+                    Esta chave será usada como backup (PiAPI) caso a API principal falhe.
                 </p>
                 <div className="flex gap-2">
                     <input

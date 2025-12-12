@@ -2,7 +2,7 @@
 
 
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { analyzeFoodImage } from '../services/geminiService';
+import { analyzeFoodImage } from '../services/analysisService';
 import { Meal, NutritionInfo, DailyGoals, ScanResult, DetectedFood } from '../types';
 import CameraView from './CameraView';
 import AnalysisResult from './AnalysisResult';
